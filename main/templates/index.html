@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+
+
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+    {{form}}
+    <input type="submit" value="Send file">
+</form>
+{% endblock content %}
+
+<ul>
+{% for k in files %}
+<li>k</li>
+{% endfor %}
+</ul>
