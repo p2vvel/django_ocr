@@ -5,7 +5,7 @@ from django import forms
 class ImageForm(forms.ModelForm):
     class Meta:
         model = ImageModel
-        fields = "__all__"
+        fields = ["file"]
 
 
 

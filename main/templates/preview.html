@@ -11,7 +11,7 @@
 <img src={{image.file.url}} href="sent image" id="image">
 
 
-<form id="transform_form" method="POST" action={% url "results" %}>
+<form id="transform_form" method="POST" action={% url "preview" %}>
     {% csrf_token %}
     {{form}}
     <p><input type="submit"></p>

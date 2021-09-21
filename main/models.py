@@ -5,7 +5,7 @@ from django.db import models
 
 import os
 import uuid
-
+from PIL import Image
 
 #upload_to can be str or function that has 2 args:
 # * instance (of model)
@@ -17,9 +17,20 @@ def uuid_name(instance, filename):
 
 class ImageModel(models.Model):
     file = models.ImageField(upload_to=uuid_name)
+    converted = models.BooleanField(default=False, null=False)
     original_image = models.ForeignKey(
         'self', on_delete=models.DO_NOTHING, default=None,
         null=True)  #used for relating transformed pics to originals
+
+    def get_PIL_Image(self) -> Image:
+        '''Returns PIL Image created from the file attribute'''
+        return Image.open(self.file.path)
+
+    def mark_as_converted(self):
+        '''Marks image and its parents as already used'''
+        self.converted = True
+        if self.original_image:
+            self.original_image.converted = True
 
     def delete(self, *args, **kwargs):
         #tried doing it by path.exist but read using exceptions might be

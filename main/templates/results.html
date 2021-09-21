@@ -6,8 +6,9 @@
 
 <img src={{image.file.url}} alt="Processed image">
 
-<div class="result">
+<h3>Results:</h3>
+<div class="result" style="border: 1px solid black;">
 {% csrf_token %}
-{{result}}
+{{results}}
 </div>
 {% endblock content %}
