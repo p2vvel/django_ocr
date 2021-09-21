@@ -19,7 +19,9 @@
 
 <h1>OCR django</h1>
 
-
+{% for msg in messages %}
+    <p style="color:red;">{{msg}}</p>
+{% endfor %}
 
 {% block content %}
 {% endblock content %}

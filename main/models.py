@@ -33,7 +33,7 @@ class ImageModel(models.Model):
             self.original_image.converted = True
 
     def delete(self, *args, **kwargs):
-        #tried doing it by path.exist but read using exceptions might be
+        #tried doing it by os.path.exist(), but using exceptions might be
         # better idea(file might exist while checking its existence,
         # but be missed when trying to delete it)
         try:
