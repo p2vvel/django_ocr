@@ -18,7 +18,14 @@ import uuid
 from .models import ImageModel
 
 
-def transform_image(img: Image, rotation = 0, mirror_x = False, mirror_y=False) -> Image:
+def transform_image(img: Image, rotation, mirror_x, mirror_y) -> Image:
+    if int(rotation) != 0:
+        angle = int(rotation)
+        img = img.rotate(360-angle, expand=True)    #rotate rotates image counterclockwise (thats why 360-angle)
+    if mirror_x:
+        img = img.transpose(Image.FLIP_LEFT_RIGHT)
+    if mirror_y:
+        img = img.transpose(Image.FLIP_TOP_BOTTOM)
     return img
 
 def save_image(img: Image, parent: ImageModel = None) -> ImageModel:
@@ -49,15 +56,12 @@ def image_preview(request):
     if request.method == "POST":
         form = TransformationFrom(request.POST)
         if form.is_valid():
-            data = form.cleaned_data
             img_model = ImageModel.objects.get(pk=request.session["img_key"])
             img = img_model.get_PIL_Image()
             #transform image and save it
-            new_img = transform_image(img)
+            new_img = transform_image(img, **form.cleaned_data)
             new_img_model = save_image(new_img, parent=img_model)
             request.session["img_key"] = new_img_model.pk
-            # new_img = new_img_model.get_PIL_Image()
-            # result = pytesseract.image_to_string()
             return redirect("results")
     else:
         img = ImageModel.objects.get(pk=request.session.get("img_key"))
