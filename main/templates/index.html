@@ -3,16 +3,13 @@
 
 
 
+
 {% block content %}
+
 <form method="POST" enctype="multipart/form-data">
 {% csrf_token %}
-    {{form}}
+    {{form.as_p}}
     <input type="submit" value="Send file">
 </form>
-{% endblock content %}
 
-<ul>
-{% for k in files %}
-<li>k</li>
-{% endfor %}
-</ul>
+{% endblock content %}

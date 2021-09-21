@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+<img src={{image.file.url}} alt="Processed image">
+
+<div class="result">
+{% csrf_token %}
+{{result}}
+</div>
+{% endblock content %}

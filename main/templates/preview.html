@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+
+{% block content %}
+<script type="text/javascript" src={% static "image_transform.js" %}></script>
+
+
+<img src={{image.file.url}} href="sent image" id="image">
+
+
+<form id="transform_form" method="POST" action={% url "results" %}>
+    {% csrf_token %}
+    {{form}}
+    <p><input type="submit"></p>
+</form>
+
+
+{% endblock content %}
