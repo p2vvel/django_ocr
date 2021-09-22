@@ -8,14 +8,27 @@
 <script type="text/javascript" src={% static "image_transform.js" %}></script>
 
 
-<img src={{image.file.url}} href="sent image" id="image">
 
 
-<form id="transform_form" method="POST" action={% url "preview" %}>
-    {% csrf_token %}
-    {{form}}
-    <p><input type="submit"></p>
-</form>
 
+
+<div class="row">
+<div class="col">
+<div class="d-flex">
+    <img src={{image.file.url}} class="img-fluid" alt="Sent image" id="image">
+</div>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col">
+    <form id="transform_form" method="POST" action={% url "preview" %}>
+        {% csrf_token %}
+        {{form.as_p}}
+        <input class="btn btn-primary" type="submit">
+    </form>
+</div>
+</div>
 
 {% endblock content %}

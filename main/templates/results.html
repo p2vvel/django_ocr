@@ -3,12 +3,22 @@
 
 {% block content %}
 
+<style>
+    .result{
+        white-space: pre;
+    }
+</style>
 
-<img src={{image.file.url}} alt="Processed image">
 
-<h3>Results:</h3>
-<div class="result" style="border: 1px solid black;">
-{% csrf_token %}
-{{results}}
+
+
+<div class="card" >
+<img src={{image.file.url}} class="card-img-top" alt="Processed image">
+  <div class="card-body">
+      <h5 class="card-title">Results:</h5>
+    <p class="card-text result" id="results">{{results}}</p>
+  </div>
 </div>
+
+
 {% endblock content %}
