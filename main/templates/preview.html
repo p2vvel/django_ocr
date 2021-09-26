@@ -8,15 +8,24 @@
 <script type="text/javascript" src={% static "image_transform.js" %}></script>
 
 
+<style>
+    img{
+        max-height: 100vh;
+    }
+</style>
 
 
 
 
-<div class="row">
+<div class="row" id="vertical-image-container">
 <div class="col">
-<div class="d-flex">
-    <img src={{image.file.url}} class="img-fluid" alt="Sent image" id="image">
+    <img src={{rotated_image.file.url}} class="img-fluid" alt="Sent image" id="vertical-image">
 </div>
+</div>
+
+<div class="row" id="horizontal-image-container">
+<div class="col">
+    <img src={{image.file.url}} class="img-fluid" alt="Sent image" id="horizontal-image">
 </div>
 </div>
 

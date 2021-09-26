@@ -46,8 +46,8 @@ def index_view(request):
             request.session["img_key"] = img.pk
             return redirect("preview")
     else:
-        #removing info about previously converted images 
-        # request.session.pop("img_key", None)    
+        #removing info about previously converted images
+        # request.session.pop("img_key", None)
         form = ImageForm()
     context = {"form": form}
     return render(request, "index.html", context)
@@ -61,18 +61,33 @@ def image_preview(request):
                 img_model = ImageModel.objects.get(
                     pk=request.session["img_key"])
                 img = img_model.get_PIL_Image()
+
+                print(form.cleaned_data)
                 #transform image and save it
                 new_img = transform_image(img, **form.cleaned_data)
                 new_img_model = save_image(new_img, parent=img_model)
+                
                 request.session["img_key"] = new_img_model.pk
                 return redirect("results")
         else:
             img = ImageModel.objects.get(pk=request.session["img_key"])
-            context = {"image": img, "form": TransformationFrom()}
+
+            #creating rotated img, because i lost whole day trying to rotate it properly without destroying layout :((((
+            # temp = Image.open(img.file.path)
+            # temp = temp.rotate(-90, expand=True)
+            # rotated_image = save_image(temp, parent=img)
+            rotated_image = None
+
+            context = {
+                "image": img,
+                "form": TransformationFrom(),
+                "rotated_image": rotated_image
+            }
+
             return render(request, "preview.html", context)
     except (KeyError, ImageModel.DoesNotExist):
         messages.warning(request, "Choose file!")
-        return redirect("index")    #no image to ocr
+        return redirect("index")  #no image to ocr
     except Exception as e:
         print("ERROR: %s" % e)
         messages.error(request, "Unexpected Error :((")
@@ -89,7 +104,7 @@ def results(request):
         return render(request, "results.html", context)
     except (KeyError, ImageModel.DoesNotExist):
         messages.warning(request, "Choose file!")
-        return redirect("index")    #no image to ocr
+        return redirect("index")  #no image to ocr
     except Exception as e:
         print("ERROR: %s" % e)
         messages.error(request, "Unexpected Error :((")
