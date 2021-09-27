@@ -1,5 +1,3 @@
-from functools import reduce
-from django import http
 from .forms import ImageForm, TransformationFrom
 from django.shortcuts import redirect, render
 from django.contrib import messages
@@ -14,8 +12,8 @@ import uuid
 
 from .models import ImageModel
 
-
-def transform_image(img: Image, rotation, mirror_x, mirror_y) -> Image:
+def transform_image(img: Image, rotation, mirror_x, mirror_y, *args,
+                    **kwargs) -> Image:
     if int(rotation) != 0:
         angle = int(rotation)
         img = img.rotate(
@@ -54,6 +52,22 @@ def index_view(request):
     return render(request, "index.html", context)
 
 
+def problem_handler(func):
+    def wrapper(request, *args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except (KeyError, ImageModel.DoesNotExist):
+            messages.warning(request, "Choose file!")
+            return redirect("index")  #no image to ocr
+        except Exception as e:
+            print("ERROR: %s" % e)
+            messages.error(request, "Unexpected Error :((")
+            return redirect("index")
+    return wrapper
+
+
+
+
 def image_preview(request):
     try:
         if request.method == "POST":
@@ -63,20 +77,20 @@ def image_preview(request):
                     pk=request.session["uploaded_img_key"])
                 img = img_model.get_PIL_Image()
 
-                print(form.cleaned_data)
                 #transform image and save it
                 new_img = transform_image(img, **form.cleaned_data)
                 new_img_model = save_image(new_img, parent=img_model)
-                
 
-                #TODO: zmienic spoosob przekazywania id zdjecia, zeby 
-                # nie stwarzalo problemow z nadpisywaniem podczas cofania
+                request.session["chosen_language"] = form.cleaned_data[
+                    "language"]
+
                 request.session["result_img_key"] = new_img_model.pk
                 return redirect("results")
         elif request.method == "GET":
-            img = ImageModel.objects.get(pk=request.session["uploaded_img_key"])
+            img = ImageModel.objects.get(
+                pk=request.session["uploaded_img_key"])
 
-            #creating rotated img, because i lost whole day trying to rotate it properly without destroying layout :((((
+            #creating rotated img, because ive lost whole day trying to rotate it properly without destroying layout :((((
             temp = Image.open(img.file.path)
             temp = temp.rotate(-90, expand=True)
             rotated_image = save_image(temp, parent=img)
@@ -100,12 +114,18 @@ def image_preview(request):
 
 def results(request):
     try:
-        image_model = ImageModel.objects.get(pk=request.session["result_img_key"])
+        chosen_language = request.session.get("chosen_language", "eng")
+
+        image_model = ImageModel.objects.get(
+            pk=request.session["result_img_key"])
         image_model.mark_as_converted()
         image = image_model.get_PIL_Image()
-        results = pytesseract.image_to_string(image)
+
+        results = pytesseract.image_to_string(image, lang=chosen_language)
         context = {"image": image_model, "results": results}
+
         return render(request, "results.html", context)
+
     except (KeyError, ImageModel.DoesNotExist):
         messages.warning(request, "Choose file!")
         return redirect("index")  #no image to ocr

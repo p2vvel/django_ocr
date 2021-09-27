@@ -11,14 +11,23 @@
 
 
 
+<div class="row">
+  <div class="col-12">
+      <img src={{image.file.url}} class="img-fluid" alt="Processed image">
+  </div>
 
-<div class="card" >
-<img src={{image.file.url}} class="card-img-top" alt="Processed image">
-  <div class="card-body">
-      <h5 class="card-title">Results:</h5>
-    <p class="card-text result" id="results">{{results}}</p>
+  <div class="col-12">
+    <div class="card" >
+      <div class="card-body">
+          <h5 class="card-title">Results:</h5>
+        <p class="card-text result" id="results">{{results}}</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col">
+    <a href={% url "index" %} class="btn btn-primary">Try another image</a>
   </div>
 </div>
-
 
 {% endblock content %}

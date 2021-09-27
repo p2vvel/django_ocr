@@ -15,13 +15,18 @@ class ImageForm(forms.ModelForm):
 rotate_options = (
     (0, "No rotation"),
     (90, "Rotate right"),
-    (270, "Rotate left"),
     (180, "Upside down"),
+    (270, "Rotate left"),
+)
+
+language_options = (
+    ("eng", "English"),
+    ("pol", "Polish"),
 )
 
 
-
 class TransformationFrom(forms.Form):
-    rotation = forms.ChoiceField(choices=rotate_options, label="Rotation", initial="0", widget=forms.RadioSelect(attrs={"class": "form-check"}))
+    language = forms.ChoiceField(choices = language_options, label="Language", initial="pol")
+    rotation = forms.ChoiceField(choices=rotate_options, label="Rotation", initial="0", widget=forms.Select(attrs={"class": "form-check"}))
     mirror_x = forms.BooleanField(label="Mirror X", initial=False, required=False, widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
     mirror_y = forms.BooleanField(label="Mirror Y", initial=False, required=False, widget=forms.CheckboxInput(attrs={"class": "form-check-input"}))
