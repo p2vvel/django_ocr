@@ -43,11 +43,12 @@ def index_view(request):
         form = ImageForm(request.POST, request.FILES)
         if form.is_valid():
             img = form.save()
-            request.session["img_key"] = img.pk
+            request.session["uploaded_img_key"] = img.pk
             return redirect("preview")
-    else:
+    elif request.method == "GET":
         #removing info about previously converted images
-        # request.session.pop("img_key", None)
+        request.session.pop("uploaded_img_key", None)
+        request.session.pop("result_img_key", None)
         form = ImageForm()
     context = {"form": form}
     return render(request, "index.html", context)
@@ -59,7 +60,7 @@ def image_preview(request):
             form = TransformationFrom(request.POST)
             if form.is_valid():
                 img_model = ImageModel.objects.get(
-                    pk=request.session["img_key"])
+                    pk=request.session["uploaded_img_key"])
                 img = img_model.get_PIL_Image()
 
                 print(form.cleaned_data)
@@ -67,16 +68,19 @@ def image_preview(request):
                 new_img = transform_image(img, **form.cleaned_data)
                 new_img_model = save_image(new_img, parent=img_model)
                 
-                request.session["img_key"] = new_img_model.pk
+
+                #TODO: zmienic spoosob przekazywania id zdjecia, zeby 
+                # nie stwarzalo problemow z nadpisywaniem podczas cofania
+                request.session["result_img_key"] = new_img_model.pk
                 return redirect("results")
-        else:
-            img = ImageModel.objects.get(pk=request.session["img_key"])
+        elif request.method == "GET":
+            img = ImageModel.objects.get(pk=request.session["uploaded_img_key"])
 
             #creating rotated img, because i lost whole day trying to rotate it properly without destroying layout :((((
-            # temp = Image.open(img.file.path)
-            # temp = temp.rotate(-90, expand=True)
-            # rotated_image = save_image(temp, parent=img)
-            rotated_image = None
+            temp = Image.open(img.file.path)
+            temp = temp.rotate(-90, expand=True)
+            rotated_image = save_image(temp, parent=img)
+            # rotated_image = None
 
             context = {
                 "image": img,
@@ -96,7 +100,7 @@ def image_preview(request):
 
 def results(request):
     try:
-        image_model = ImageModel.objects.get(pk=request.session["img_key"])
+        image_model = ImageModel.objects.get(pk=request.session["result_img_key"])
         image_model.mark_as_converted()
         image = image_model.get_PIL_Image()
         results = pytesseract.image_to_string(image)
