@@ -22,6 +22,7 @@ class ImageModel(models.Model):
         'self', on_delete=models.SET_NULL, default=None,
         null=True)  #used for relating transformed pics to originals
 
+
     def get_PIL_Image(self) -> Image:
         '''Returns PIL Image created from the file attribute'''
         return Image.open(self.file.path)
