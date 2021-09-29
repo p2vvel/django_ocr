@@ -19,7 +19,7 @@ class ImageModel(models.Model):
     file = models.ImageField(upload_to=uuid_name)
     converted = models.BooleanField(default=False, null=False)
     original_image = models.ForeignKey(
-        'self', on_delete=models.SET_NULL, default=None,
+        'self', on_delete=models.CASCADE, default=None,
         null=True)  #used for relating transformed pics to originals
 
 
