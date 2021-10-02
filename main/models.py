@@ -12,7 +12,11 @@ from PIL import Image
 # * filename (original filename of uploaded file)
 def uuid_name(instance, filename):
     extension = filename.split(".")[-1] if "." in filename else ""
-    return "uploads/{uuid}.{ext}".format(uuid=str(uuid.uuid4()), ext=extension)
+    path = os.path.normpath("/media/{uuid}.{ext}".format(uuid=str(uuid.uuid4()), ext=extension))
+    if path.startswith("/media/"):
+        return path
+    else:
+        raise Exception("Path traversal attempt!")
 
 
 class ImageModel(models.Model):
