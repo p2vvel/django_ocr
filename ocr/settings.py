@@ -33,7 +33,13 @@ SECRET_KEY = os.environ.get("SECRET_KEY", 'django-insecure-vk3mi2y72!j9_yz22ik(0
 
 DEBUG = False if os.environ.get("DEBUG", True) == "False" else True
 
-ALLOWED_HOSTS = ['*']
+# print("DEBUG MODE" if DEBUG else "PRODUCTION MODE")
+
+
+if DEBUG:
+    ALLOWED_HOSTS = []
+else:
+    ALLOWED_HOSTS = ['*']
 
 
 # Application definition
