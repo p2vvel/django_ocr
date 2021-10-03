@@ -21,7 +21,7 @@ from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
 
-import settings
+from ocr import settings
 
 urlpatterns = [
     path("", index_view, name="index"),
@@ -31,4 +31,4 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlaptterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
