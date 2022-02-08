@@ -31,7 +31,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", 'django-insecure-vk3mi2y72!j9_yz22ik(0
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = False if os.environ.get("DEBUG", True) == "False" else True
+DEBUG = True#False if os.environ.get("DEBUG", True) == "False" else True
 
 # print("DEBUG MODE" if DEBUG else "PRODUCTION MODE")
 
