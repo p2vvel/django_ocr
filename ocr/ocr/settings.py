@@ -12,12 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 
 from pathlib import Path
+import os
 
-from django.urls.conf import path
-
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,19 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", 'django-insecure-vk3mi2y72!j9_yz22ik(0y*p-^)luw-mycfj@uacb_jt8e#g24')
+SECRET_KEY = 'django-insecure-vk3mi2y72!j9_yz22ik(0y*p-^)luw-mycfj@uacb_jt8e#g24'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-
-DEBUG = True#False if os.environ.get("DEBUG", True) == "False" else True
-
-# print("DEBUG MODE" if DEBUG else "PRODUCTION MODE")
+DEBUG = True
 
 
-if DEBUG:
-    ALLOWED_HOSTS = []
-else:
-    ALLOWED_HOSTS = ['*']
+
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -139,13 +130,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = "/media/"
 
-if DEBUG:
-    #no problem with permissions during development
-    STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
-else:
-    STATIC_ROOT = '/static/'
-    MEDIA_ROOT = "/media/"
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
