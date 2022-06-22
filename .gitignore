@@ -2,4 +2,7 @@
 venv/
 uploads/
 media/
-db.sqlite3
+static/
+*.sqlite3
+.env
+__pycache__/

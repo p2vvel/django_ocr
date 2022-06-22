@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  ocr:
+    build: .
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DJANGO_SETTINGS_MODULE=ocr.production
+    volumes:
+      - static:/static/static/
+      - media:/static/media/
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - static:/static/static/
+      - media:/static/media/
+    depends_on:
+      - ocr
+    ports:
+      - "80:80"
+
+volumes:
+  static:
+  media:
